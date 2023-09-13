@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './models/product.entity';
 import { ProductsService } from './models/products.service';
+import { AdminModule } from './admin/admin.module';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -18,8 +20,10 @@ import { ProductsService } from './models/products.service';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([Product]), // imports the 'Product' entity
+    AdminModule,
   ], // forFeature() defines which repositories are registered in the current scope
   controllers: [AppController, ProductsController],
   providers: [ProductsService], // registers 'ProductsService' in the module -> 'ProductsService' is available to be injected and used across the module
+  exports: [ProductsService], // can inject the 'ProductsSevice' to 'AdminProductsController' constructor without requiring to import and register it in the 'AdminModule'
 })
 export class AppModule {}

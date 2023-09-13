@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Param, Res } from '@nestjs/common';
+import { Controller, Get, Render, Param, Res, ParseIntPipe } from '@nestjs/common';
 import { ProductsService } from './models/products.service';
 
 @Controller('/products')
@@ -21,14 +21,14 @@ export class ProductsController {
 
   @Get('/:id')
   async show(@Param() params, @Res() response) {
-    // @Res() decorator allows to access the Express response object
     const product = await this.productsService.findOne(params.id);
+    // @Res() decorator allows to access the Express response object
     if (product === undefined) {
       return response.redirect('/products');
     }
-    const viewData = [];
-    viewData['title'] = product.name + ' - Online Store';
-    viewData['subtitle'] = product.name + ' - Product Information';
+    const viewData = []; // access the 'product' attributes thru the corresponding getters
+    viewData['title'] = product.getName() + ' - Online Store';
+    viewData['subtitle'] = product.getName() + ' - Product Information';
     viewData['product'] = product;
     return response.render('products/show.hbs', { viewData }); // set the 'viewData' and render the 'products/show.hbs'
   }

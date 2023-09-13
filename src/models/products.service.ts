@@ -15,6 +15,12 @@ export class ProductsService {
   } // 'productsRepository' invokes the 'find' method inherited from the Repository class
 
   findOne(id: string): Promise<Product> {
-    return this.productsRepository.findOne(id);
+    return this.productsRepository.findOne({
+      where: { id: parseInt(id) },
+    });
   }
+
+  createOrUpdate(product: Product): Promise<Product> {
+    return this.productsRepository.save(product);
+  } // Saves a given entity in the database. If the entity does not exist in the database then inserts, otherwise updates.
 }
