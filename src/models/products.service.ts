@@ -23,4 +23,10 @@ export class ProductsService {
   createOrUpdate(product: Product): Promise<Product> {
     return this.productsRepository.save(product);
   } // Saves a given entity in the database. If the entity does not exist in the database then inserts, otherwise updates.
+
+  
+  async remove(id: string): Promise<void> {
+    await this.productsRepository.delete(id);
+  }
+
 }
