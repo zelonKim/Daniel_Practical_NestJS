@@ -8,10 +8,14 @@ import {
   UseInterceptors,
   UploadedFile,
   Param,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { ProductsService } from '../models/products.service';
 import { Product } from 'src/models/product.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ProductValidator } from 'src/validators/product.validator';
+import * as fs from 'fs';
 
 
 @Controller('/admin/products')
@@ -32,14 +36,25 @@ export class AdminProductsController {
   @Post('/store')
   @UseInterceptors(FileInterceptor('image', { dest: './public/uploads' }))
   @Redirect('/admin/products')
-  async store(@Body() body, @UploadedFile() file: Express.Multer.File) {
-    const newProduct = new Product();
-    newProduct.setName(body.name);
-    newProduct.setDescription(body.description);
-    newProduct.setPrice(body.price);
-    newProduct.setImage(file.filename); // pass the filename of the file uploaded by the multer
-    await this.productsService.createOrUpdate(newProduct);
+  async store(@Body() body, @UploadedFile() file: Express.Multer.File, @Req() request,) {
+    const toValidate: string[] = ['name', 'description','price', 'imageCreate']; // defines the validations we want to apply
+
+    const errors: string[] = ProductValidator.validate(body, file, toValidate)
+    if(errors.length > 0) {
+      if(file) { // checks if the image was uploaded
+        fs.unlinkSync(file.path) // removes the image from the file system by using fs.unlinkSync()
+      }
+      request.session.flashErrors = errors; 
+    } else {
+       const newProduct = new Product();
+       newProduct.setName(body.name);
+       newProduct.setDescription(body.description);
+       newProduct.setPrice(body.price);
+       newProduct.setImage(file.filename); // pass the filename of the file uploaded by the multer
+       await this.productsService.createOrUpdate(newProduct);
+    }
   }
+
 
   @Post('/:id')
   @Redirect('/admin/products')
@@ -61,12 +76,24 @@ export class AdminProductsController {
 
 @Post('/:id/update')
 @UseInterceptors(FileInterceptor('image', {dest: './public/uploads'}))
-@Redirect('/admin/products')
 async update(
   @Body() body,
   @UploadedFile() file: Express.Multer.File,
-  @Param('id') id: string
+  @Param('id') id: string,
+  @Req() request,
+  @Res() response,
 ) {
+  const toValidate: string[] = ['name', 'description', 'price', 'imageCreate'];
+  
+  const errors: string[] = ProductValidator.validate(body, file, toValidate)
+  if (errors.length > 0) {
+    if(file) {
+      fs.unlinkSync(file.path);
+    }
+    request.session.flashErrors = errors;
+    return response.redirect('/admin/products/' + id);
+  } 
+  else {
   const product = await this.productsService.findOne(id);
   product.setName(body.name)
   product.setDescription(body.description);
@@ -75,5 +102,7 @@ async update(
     product.setImage(file.filename);
   }
   await this.productsService.createOrUpdate(product);
+  return response.redirect('/admin/products/');
+}
 }
 }

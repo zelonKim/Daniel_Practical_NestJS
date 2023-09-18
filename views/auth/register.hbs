@@ -5,8 +5,14 @@
         <div class="col-md-8">
           <div class="card">
             <div class="card-header">Register</div>
-            <div class="card-body">
 
+            <div class="card-body">
+              {{#if flashErros}}
+                {{#each flashErrors}}
+                  <p class="alert alert-danger">{{this}}</p>
+                {{/each}}
+              {{/if}}
+              
               <form method="POST" action="/auth/store">
                 <div class="form-group row">
                   <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
