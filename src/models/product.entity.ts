@@ -15,7 +15,7 @@ export class Product {
   image: string;
 
   @Column()
-  price: string;
+  price: number;
 
   getId(): number {
     return this.id;
@@ -26,7 +26,7 @@ export class Product {
   }
 
   getName(): string {
-    return this.name.toUpperCase(); 
+    return this.name.toUpperCase();
   }
 
   setName(name: string) {
@@ -49,11 +49,20 @@ export class Product {
     this.image = image;
   }
 
-  getPrice(): string {
+  getPrice(): number {
     return this.price;
   }
 
-  setPrice(price: string) {
+  setPrice(price: number) {
     this.price = price;
+  }
+
+  static sumPricesByQuantities(products: Product[], productsInSession): number {
+    let total = 0;
+    for (let i = 0; i < products.length; i++) {
+      total =
+        total + products[i].getPrice() * productsInSession[products[i].getId()];
+    }
+    return total;
   }
 }

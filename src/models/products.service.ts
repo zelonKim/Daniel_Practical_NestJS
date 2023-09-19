@@ -29,4 +29,7 @@ export class ProductsService {
     await this.productsRepository.delete(id);
   }
 
+  findByIds(ids: string[]): Promise<Product[]> {
+    return this.productsRepository.findByIds(ids); // findByIds() receives an array of strings and returns a Promise consisting of an array 
+  } // takes the arrary of ids, and returns the corresponding products based on those ids
 }
