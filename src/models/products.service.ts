@@ -24,12 +24,11 @@ export class ProductsService {
     return this.productsRepository.save(product);
   } // Saves a given entity in the database. If the entity does not exist in the database then inserts, otherwise updates.
 
-  
   async remove(id: string): Promise<void> {
     await this.productsRepository.delete(id);
   }
 
   findByIds(ids: string[]): Promise<Product[]> {
-    return this.productsRepository.findByIds(ids); // findByIds() receives an array of strings and returns a Promise consisting of an array 
+    return this.productsRepository.findByIds(ids); // findByIds() receives an array of strings and returns a Promise consisting of an array
   } // takes the arrary of ids, and returns the corresponding products based on those ids
 }
