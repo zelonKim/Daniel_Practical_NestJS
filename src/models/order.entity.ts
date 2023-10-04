@@ -43,9 +43,9 @@ export class Order {
     this.total = total;
   }
 
-  getDate() {
-    return this.date;
-  }
+  getDate(): string {
+    return this.date.toISOString().split('T')[0]; // 'toISOString' method returns a date object of YYYY-MM-DDTHH:mm:ss format
+  } // split('T')[0] method removes the Time portion
 
   setDate(date: Date) {
     this.date = date;

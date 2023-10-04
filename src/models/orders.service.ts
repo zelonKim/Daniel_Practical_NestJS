@@ -12,4 +12,14 @@ export class OrdersService {
   createOrUpdate(order: Order): Promise<Order> {
     return this.ordersRepository.save(order);
   }
+
+  findByUserId(id: number): Promise<Order[]> {
+    // receives a user id and finds the orders related to that user id
+    return this.ordersRepository.find({
+      where: {
+        user: { id: id },
+      },
+      relations: ['items', 'items.product'], // relations option is used to inform the repository that we want to extract 'orders' , 'items' related to the orders , 'products' related to the items related to the orders
+    });
+  }
 }

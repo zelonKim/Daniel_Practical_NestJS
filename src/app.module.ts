@@ -11,17 +11,18 @@ import { UsersService } from './models/users.service';
 import { CartModule } from './cart/cart.module';
 import { Order } from './models/order.entity';
 import { OrdersService } from './models/orders.service';
+import { AccountModule } from './account/account.module';
 
 @Global()
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'bjktx3it2su2hysxadv0-mysql.services.clever-cloud.com',
       port: 3306,
-      username: 'root',
-      password: 'ksz40204',
-      database: 'online_store',
+      username: 'ug92yp7mrosd6mi7',
+      password: '0diFfJVC7B967nYuiZJQ',
+      database: 'bjktx3it2su2hysxadv0',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
@@ -29,6 +30,7 @@ import { OrdersService } from './models/orders.service';
     AdminModule,
     AuthModule,
     CartModule,
+    AccountModule,
   ], // forFeature() defines which repositories are registered in the current scope
   controllers: [AppController, ProductsController],
   providers: [ProductsService, UsersService, OrdersService], // registers 'ProductsService' in the module -> 'ProductsService' is available to be injected and used across the module

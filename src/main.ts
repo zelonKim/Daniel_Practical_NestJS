@@ -44,6 +44,16 @@ async function bootstrap() {
     }
   });
 
+  app.use('/account*', function (req, res, next) {
+    // the middleware that applies for routes that begins with the '/account'
+    if (req.session.user) {
+      // if current user is logged in
+      next();
+    } else {
+      res.redirect('/');
+    }
+  });
+
   await app.listen(3000);
 }
 bootstrap();
